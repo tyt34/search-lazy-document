@@ -30,7 +30,7 @@ function Menu() {
         </b>
       </p>
       <input 
-        className='menu__id-input'
+        className='menu-input menu__id-input'
         type="text" 
       />
 
@@ -50,11 +50,11 @@ function Menu() {
         className='menu__date-inputs'
       >
         <input 
-          className='menu__date-input menu__date-input-from'
+          className='menu-input menu__date-input menu__date-input-from'
           type="text" 
         />
         <input 
-          className='menu__date-input menu__date-input-to'
+          className='menu-input menu__date-input menu__date-input-to'
           type="text" 
         />
       </div>
@@ -72,11 +72,10 @@ function Menu() {
         </b>
       </p>
       <input 
-        className='menu__name-input'
+        className='menu-input menu__name-input'
         type="text" 
       />
 
-      
       <div
         className='menu__sort'
       >
