@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './list.scss'
-import { IDocument, objectFromApi } from '../../shared/types/main'
+import { IDocumentID, objectFromApi } from '../../shared/types/main'
 import { getMessages } from '../../shared/api/main'
 import Document from './document/document'
 
@@ -14,7 +14,7 @@ const emptyObject = [
 ]
 
 function List() {
-  const [data, setData] = useState<IDocument[]>(emptyObject)
+  const [data, setData] = useState<IDocumentID[]>(emptyObject)
 
   useEffect( () => {
     getMessages()
@@ -39,8 +39,12 @@ function List() {
     >
       {
         data.map( (obj) => (
-          <>
-          </>
+          <Document
+            key={obj.id}
+            title={obj.title}
+            text={obj.text}
+            dateOfCreate={obj.dateOfCreate}
+          />
         ))
       }
     </div>

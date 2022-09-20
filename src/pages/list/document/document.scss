@@ -1,0 +1,41 @@
+.document {
+  width: 240px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 20px;
+}
+
+.document__damper {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  height: 50px;
+  background-color: #D2E8BA;
+  align-items: center;
+  border-radius: 5px;
+  z-index: 2;
+}
+
+.document__forvard-damper {
+  margin-right: 30px;
+}
+
+.document__title {
+  margin-left: 30px;
+}
+
+.document__info {
+  margin-top: -5px;
+  height: 100px;
+  background-color: beige;
+  border-radius: 0 0 5px 5px;
+}
+
+.document__text {
+  padding-top: 10px;
+  margin-left: 5px;
+}
+
+.document__info-close {
+  display: none;
+}
