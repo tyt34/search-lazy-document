@@ -1,0 +1,30 @@
+.menu {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
+
+.menu__id-input {
+  width: 240px;
+}
+
+.menu__date-input {
+  width: 110px;
+}
+
+.menu__message {
+  height: 20px;
+}
+
+.menu__date-inputs {
+  display: flex;
+  justify-content: space-between;
+}
+
+.menu__sort-title {
+  margin-top: 20px;
+}
+
+.menu__sort-select {
+  width: 250px;
+}

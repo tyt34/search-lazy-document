@@ -1,4 +1,5 @@
 import './main.scss'
+import Menu from './menu/menu'
 
 function Main() {
 
@@ -6,6 +7,7 @@ function Main() {
     <div
       className='main'
     >
+      <Menu />
     </div>
   )
 }
