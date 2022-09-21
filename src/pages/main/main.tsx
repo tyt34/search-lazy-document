@@ -91,12 +91,25 @@ function Main() {
 
     const numberFrom = (Number(nowNumberOfPage)-1)*numOnPage
     const numberTo = (Number(nowNumberOfPage)*numOnPage)
-    console.log(' текущая страница: ', nowNumberOfPage)
-    console.log(' на сранице может уместиться: ', numOnPage)
-    console.log(' всего может быть страниц: ', maxPages)
+    //console.log(' текущая страница: ', nowNumberOfPage)
+    //console.log(' на сранице может уместиться: ', numOnPage)
+    //console.log(' всего может быть страниц: ', maxPages)
 
-    console.log(' первое, с какого элемента нам брать: ', numberFrom)
-    console.log(' по какой элемент: ', numberTo)
+    //console.log(' первое, с какого элемента нам брать: ', numberFrom)
+    //console.log(' по какой элемент: ', numberTo)
+
+    let arrForShow
+
+    // первый if на случай, если перейти на максимальную страницу
+    // затем увеличить экран, тогда возникает противоречие
+    // например: максимум 10 на экарне, и вы на 10 странице
+    // увеличиваете экран, на нем умещается максимум 15
+    // получается нужны данные за пределом доступности  
+    if (numberFrom > numDocuments) {
+      arrForShow = data.slice(numDocuments-numOnPage, numDocuments+1)
+    } else {
+      arrForShow = data.slice(numberFrom, numberTo)
+    }
 
     /*
     let arrForShow = data.map( (el, i) => {
@@ -104,9 +117,9 @@ function Main() {
     })
     */
 
-    console.log(' d: ', data)
+    //console.log(' d: ', data)
 
-    let arrForShow = data.slice(numberFrom, numberTo)
+    
     setShowData(arrForShow)
 
   }, [height, data, nowNumberOfPage])
