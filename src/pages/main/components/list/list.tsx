@@ -4,41 +4,17 @@ import { IDocumentID, objectFromApi } from '../../../../shared/types/main'
 import { getMessages } from '../../../../shared/api/main'
 import Document from './components/document/document'
 
-const emptyObject = [
-  {
-    id: 0,
-    title: '',
-    text: '',
-    dateOfCreate: new Date('2005-11-25T12:00:00.000Z'),
-  }
-]
+interface Props {
+  showData: IDocumentID[]
+}
 
-function List() {
-  const [data, setData] = useState<IDocumentID[]>(emptyObject)
-
-  useEffect( () => {
-    getMessages()
-      .then( (res) => {
-        //console.log(' res: ', res)
-        let changedData = res.map( (obj: objectFromApi) => {
-          return {
-            id: obj.id,
-            title: obj.answer,
-            text: obj.question,
-            dateOfCreate: obj.airdate
-          }
-        })
-        setData(changedData)
-        //console.log(' -> ', changedData)
-      })
-  }, [])
-
+function List({showData}: Props) {
   return (
     <div 
       className='list'
     >
       {
-        data.map( (obj) => (
+        showData.map( (obj) => (
           <Document
             key={obj.id}
             title={obj.title}

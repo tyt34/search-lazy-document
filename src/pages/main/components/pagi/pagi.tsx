@@ -35,10 +35,10 @@ function Pagi({numOnPage, maxPages}: Props) {
       {
         arrButtons.map( (button) => (
           <a
+            key={button}
             href={'#/'+button.toString()}
           >
             <div
-              key={button}
               className={
                 Number(nowNumberOfPage) === button ?
                 "pagi__button pagi__button-selet"
