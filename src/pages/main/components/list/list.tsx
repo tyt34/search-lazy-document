@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import './list.scss'
-import { IDocumentID, objectFromApi } from '../../shared/types/main'
-import { getMessages } from '../../shared/api/main'
-import Document from './document/document'
+import { IDocumentID, objectFromApi } from '../../../../shared/types/main'
+import { getMessages } from '../../../../shared/api/main'
+import Document from './components/document/document'
 
 const emptyObject = [
   {
@@ -19,7 +19,7 @@ function List() {
   useEffect( () => {
     getMessages()
       .then( (res) => {
-        console.log(' res: ', res)
+        //console.log(' res: ', res)
         let changedData = res.map( (obj: objectFromApi) => {
           return {
             id: obj.id,
@@ -29,7 +29,7 @@ function List() {
           }
         })
         setData(changedData)
-        console.log(' -> ', changedData)
+        //console.log(' -> ', changedData)
       })
   }, [])
 

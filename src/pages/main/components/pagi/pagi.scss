@@ -1,0 +1,25 @@
+.pagi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  height: 50px;
+  background-color: azure;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.pagi__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  background-color: #bbff00;
+  cursor: pointer;
+}
+
+.pagi__button-selet {
+  background-color: hwb(145 37% 51% / 0.61);
+}

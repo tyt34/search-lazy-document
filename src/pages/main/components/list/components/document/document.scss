@@ -25,6 +25,9 @@
 }
 
 .document__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   margin-top: -5px;
   height: 100px;
   background-color: beige;
@@ -38,4 +41,9 @@
 
 .document__info-close {
   display: none;
+}
+
+.document__date {
+  margin-left: 7px;
+  margin-bottom: 10px;
 }
