@@ -15,15 +15,9 @@ function Pagi({numOnPage, maxPages}: Props) {
   const [arrButtons, setArrButtons] = useState<number[]>([1])
   const navigate = useNavigate()
   
-  //console.log(' now: ', nowNumberOfPage, numOnPage)
-
   useEffect( () => {
-    console.log(' => > ', Number(nowNumberOfPage), maxPages, maxAmountButtonsOnPage)
-    //console.log(' => > ', getButtonsForPagi(Number(nowNumberOfPage), maxPages, maxAmountButtonsOnPage))
     setArrButtons(getButtonsForPagi(Number(nowNumberOfPage), maxPages, maxAmountButtonsOnPage))
   }, [numOnPage, maxPages, nowNumberOfPage])
-
-  //console.log(' -> ', arrButtons)
 
   function changePage(button: number) {
     navigate('#/'+button)

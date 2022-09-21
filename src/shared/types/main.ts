@@ -53,3 +53,20 @@ export interface IDocumentID extends IDocument {
    */
   id: number,
 }
+
+export interface imgApi {
+  /**
+   * В данном апи на картинке будет изображен или ответ да, или нет
+   */
+  answer: 'yes' | 'no',
+  forced: boolean,
+  /**
+   * ссылка на изображение, на котором будет анимационный ответ
+   */
+  image: string,
+}
+
+export interface IImgMemory {
+  title: string,
+  image: string
+}

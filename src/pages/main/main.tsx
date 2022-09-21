@@ -4,18 +4,17 @@ import './main.scss'
 import Menu from './components/menu/menu'
 import List from './components/list/list'
 import Pagi from './components/pagi/pagi'
-import { numDocuments, heightDoc } from "../../shared/constants/const"
+import { 
+  numDocuments, 
+  heightDoc, 
+  emptyImgMemory, 
+  emptyObject } from "../../shared/constants/const"
 import { getMessages } from '../../shared/api/main'
-import { IDocumentID, objectFromApi } from '../../shared/types/main'
-
-const emptyObject = [
-  {
-    id: 0,
-    title: '',
-    text: '',
-    dateOfCreate: new Date('2005-11-25T12:00:00.000Z'),
-  }
-]
+import { 
+  IDocumentID, 
+  objectFromApi, 
+  IImgMemory 
+} from '../../shared/types/main'
 
 function Main() {
   /**
@@ -36,11 +35,26 @@ function Main() {
    */
   const [data, setData] = useState<IDocumentID[]>(emptyObject)
   const [showData, setShowData] = useState<IDocumentID[]>(emptyObject)
+  /**
+   * Массив для сохранение ссылок на изображения
+   * Например вы открыли документ, 
+   * затем сменили страницу, 
+   * вернулись обратно на прежнюю страницу
+   * и снова открыли предыдущий документ
+   * Картинка в этом случае будет прежняя
+   */
+  const [memoryImgLinks, setMemoryImgLinks] = useState<IImgMemory[]>(emptyImgMemory)
+
+  function saveImg(obj: IImgMemory): void {
+    setMemoryImgLinks( (memoryImgLinks) => [...memoryImgLinks, obj])
+  }
+
+  console.log(' m: ', memoryImgLinks)
 
   useEffect( () => {
     getMessages()
       .then( (res) => {
-        let changedData = res.map( (obj: objectFromApi) => {
+        let changedData = res.map( (obj) => {
           return {
             id: obj.id,
             title: obj.answer,
@@ -51,8 +65,6 @@ function Main() {
         setData(changedData)
       })
   }, [])
-
-  //console.log(' now: ', nowNumberOfPage)
 
   const { height } = useWindowDimensions()
 
@@ -81,13 +93,14 @@ function Main() {
     }
   }
 
-  // преобразования происходят при загрузке данных
-  // при изменение высоты экрана
-  // при изменение страницы
+  /**
+   * преобразования происходят при загрузке данных
+   * при изменение высоты экрана
+   * при изменение страницы
+   */
   useEffect( () => {
     setNumOnPage(Math.floor(height / heightDoc))
     setMaxPages(Math.ceil( numDocuments / (Math.floor(height / 60)) ))
-    //setShowData
 
     const numberFrom = (Number(nowNumberOfPage)-1)*numOnPage
     const numberTo = (Number(nowNumberOfPage)*numOnPage)
@@ -100,25 +113,18 @@ function Main() {
 
     let arrForShow
 
-    // первый if на случай, если перейти на максимальную страницу
-    // затем увеличить экран, тогда возникает противоречие
-    // например: максимум 10 на экарне, и вы на 10 странице
-    // увеличиваете экран, на нем умещается максимум 15
-    // получается нужны данные за пределом доступности  
+    /**
+     * данная проверка на случай, если перейти на максимальную страницу
+     * затем увеличить экран, тогда возникает противоречие
+     * например: максимум 10 на экарне, и вы на 10 странице
+     * увеличиваете экран, на нем умещается максимум 15
+     * получается нужны данные за пределом доступности
+     */
     if (numberFrom > numDocuments) {
       arrForShow = data.slice(numDocuments-numOnPage, numDocuments+1)
     } else {
       arrForShow = data.slice(numberFrom, numberTo)
     }
-
-    /*
-    let arrForShow = data.map( (el, i) => {
-      console.log(' i: ', i)
-    })
-    */
-
-    //console.log(' d: ', data)
-
     
     setShowData(arrForShow)
 
@@ -143,6 +149,8 @@ function Main() {
       </section>
       <List 
         showData={showData}
+        setMemoryImgLinks={saveImg}
+        memoryImgLinks={memoryImgLinks}
       />
     </div>
   )

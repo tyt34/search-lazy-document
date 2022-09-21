@@ -1,14 +1,57 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './document.scss'
-import { IDocument } from '../../../../../../shared/types/main'
+import { IDocument, IImgMemory } from '../../../../../../shared/types/main'
 import { delSymI } from '../../../../../../shared/utils/main'
+import { getImg } from '../../../../../../shared/api/main'
 
-function Document({text, title, dateOfCreate}: IDocument) {
+export interface Props extends IDocument {
+  setMemoryImgLinks: (obj: IImgMemory) => void,
+  memoryImgLinks: IImgMemory[]
+}
+
+function Document({text, title, dateOfCreate, setMemoryImgLinks, memoryImgLinks}: Props) {
   const [open, setOpen] = useState<boolean>(false)
+  const [numClickOnDamper, setNumClickOnDamper] = useState<number>(0)
+  const [img, setImg] = useState<string>('')
+  const [statusInMemory, setstatusInMemory] = useState<boolean>(false)
 
-  function openDamper() {
+  useEffect( () => {
+    setstatusInMemory(
+      memoryImgLinks.some( (el: IImgMemory) => {
+        return el.title === title
+      })
+    )
+
+    memoryImgLinks.map( (el) => {
+      if (el.title === title) {
+        console.log(' search img: ', el.image)
+        setImg(el.image)
+      }
+    })
+  }, [])
+
+  function openCloseDamper() {
+    setNumClickOnDamper(numClickOnDamper + 1)    
     setOpen(!open)
   }
+
+  /**
+   * отложенная загрузка изображения срабатывающая только при первом открытие спойлера
+   * если до этого изображение не сохранялось
+   */
+  useEffect( () => {
+    if (!statusInMemory && numClickOnDamper === 1) {
+      getImg()
+        .then( (res) => {
+          setImg(res.image)
+
+          setMemoryImgLinks({
+            title,
+            image: res.image
+          })
+        })
+    }
+  }, [numClickOnDamper])
 
   return (
     <div 
@@ -16,7 +59,7 @@ function Document({text, title, dateOfCreate}: IDocument) {
     >
       <div
         className='document__damper'
-        onClick={openDamper}
+        onClick={openCloseDamper}
       >
         <p
           className='document__title'
@@ -42,6 +85,12 @@ function Document({text, title, dateOfCreate}: IDocument) {
         >
           {text}
         </p>
+
+        <img
+          className='document__img'
+          src={img} 
+          alt=""
+        />
         
         <p
           className='document__date'

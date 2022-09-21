@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react'
 import './list.scss'
-import { IDocumentID, objectFromApi } from '../../../../shared/types/main'
-import { getMessages } from '../../../../shared/api/main'
+import { IDocumentID, IImgMemory } from '../../../../shared/types/main'
 import Document from './components/document/document'
 
 interface Props {
-  showData: IDocumentID[]
+  showData: IDocumentID[],
+  setMemoryImgLinks: (obj: IImgMemory) => void,
+  memoryImgLinks: IImgMemory[],
 }
 
-function List({showData}: Props) {
+function List({showData, setMemoryImgLinks, memoryImgLinks}: Props) {
   return (
     <div 
       className='list'
@@ -20,6 +20,8 @@ function List({showData}: Props) {
             title={obj.title}
             text={obj.text}
             dateOfCreate={obj.dateOfCreate}
+            setMemoryImgLinks={setMemoryImgLinks}
+            memoryImgLinks={memoryImgLinks}
           />
         ))
       }
