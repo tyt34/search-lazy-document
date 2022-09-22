@@ -24,7 +24,7 @@ function Document({text, title, dateOfCreate, setMemoryImgLinks, memoryImgLinks}
 
     memoryImgLinks.map( (el) => {
       if (el.title === title) {
-        console.log(' search img: ', el.image)
+        //console.log(' search img: ', el.image)
         setImg(el.image)
       }
     })

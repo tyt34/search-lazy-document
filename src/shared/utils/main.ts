@@ -6,6 +6,8 @@
 export function delSymI(text: string) {
   if (text.split('<i>').length !== 1) {
     return text.split('<i>')[1].split('</i>')[0]
+  } else if (text.split('<I>').length !== 1) {
+    return text.split('<I>')[1].split('</i>')[0]
   } else {
     return text
   }
@@ -57,4 +59,14 @@ export function getButtonsForPagi(nowNumber: number, maxPages: number, maxAmount
     }
   }
   return arrButtons
+}
+
+/**
+ * Получить псевдо рандомное число от 0 до max.
+ * max в результат не входит
+ * @param max 
+ * @returns 
+ */
+export function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
 }

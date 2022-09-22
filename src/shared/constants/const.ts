@@ -30,6 +30,6 @@ export const emptyObject: IDocumentID[] = [
     id: 0,
     title: '',
     text: '',
-    dateOfCreate: new Date('2005-11-25T12:00:00.000Z'),
+    dateOfCreate: new Date('1917-11-07T12:13:14.000Z'),
   }
 ]

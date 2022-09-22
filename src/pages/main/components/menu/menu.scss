@@ -13,6 +13,7 @@
 }
 
 .menu__message {
+  margin-top: 2px;
   height: 20px;
 }
 
@@ -34,4 +35,18 @@
   border-width: 1px;
   border-style: solid;
   border-radius: 4px;
+}
+
+.react-datepicker-popper {
+  z-index: 5 !important;
+}
+
+.menu__button-restart {
+  margin-top: 10px;
+  border-radius: 5px;
+  height: 40px;
+}
+
+.menu__name-title {
+  //margin-top: 10px;
 }

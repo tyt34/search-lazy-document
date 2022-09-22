@@ -70,3 +70,14 @@ export interface IImgMemory {
   title: string,
   image: string
 }
+
+// string в конце из за дефолтных типов встроенных в react-select
+export interface ISelectType {
+  value: 'no' | 'date' | 'name' | string, 
+  label: 'Не сортировать' | 'По дате' | 'По имени' | string
+}
+
+export interface ISelectDirection {
+  value: 'up' | 'down' | string, 
+  label: 'По возрастанию' | 'По убыванию' | string
+}

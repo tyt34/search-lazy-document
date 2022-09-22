@@ -1,18 +1,157 @@
 import './menu.scss'
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Select from 'react-select'
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
+import { IDocumentID, ISelectDirection, ISelectType } from '../../../../shared/types/main'
+import { getRandomInt } from '../../../../shared/utils/main'
+import { numDocuments } from '../../../../shared/constants/const'
+import { setEnvironmentData } from 'worker_threads'
+import { useNavigate, useParams } from 'react-router-dom'
 
-const options = [
-  { value: 'Создан', label: 'Создан' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
+const defaultSeletType: ISelectType = { value: 'no', label: 'Не сортировать' }
+const defaultSelectDirection: ISelectDirection = { value: 'up', label: 'По возрастанию' }
+
+const optionsType = [
+  defaultSeletType,
+  { value: 'date', label: 'По дате' },
+  { value: 'name', label: 'По имени' },
 ]
 
-function Menu() {
+const optionsDirection = [
+  defaultSelectDirection,
+  { value: 'down', label: 'По убыванию' },
+]
+
+interface Props {
+  data: IDocumentID[],
+  setFilterData: (objects: IDocumentID[]) => void,
+}
+
+function Menu({data, setFilterData}: Props) {
+  const navigate = useNavigate()
+  let { nowNumberOfPage } = useParams()
+
   const [messageId, setMessageId] = useState<string>('')
-  const [messageDate, setMessageDate] = useState<string>('')
   const [messageName, setMessageName] = useState<string>('')
+  const [messageDate, setMessageDate] = useState<string>('')
+
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
   
+  const [id, setId] = useState<string>('')
+  const [name, setName] = useState<string>('')
+  const [type, setType] = useState<ISelectType>(defaultSeletType)
+  const [direction, setDirection] = useState<ISelectDirection>(defaultSelectDirection)
+
+  function handleChangeId(e: React.ChangeEvent<HTMLInputElement>) {
+    setId(e.target.value)
+  }
+
+  function handleChangeName(e: React.ChangeEvent<HTMLInputElement>) {
+    setName(e.target.value)
+  }
+
+  function handeIdFocus() {
+    setMessageId(' Пример id: ' + data[getRandomInt(data.length)].id)
+
+    const timer = setTimeout(() => {
+      setMessageId('')
+    }, 10000)
+    return () => clearTimeout(timer);
+  }
+
+  function handeDateFocus() {
+    setMessageDate(' Пример даты: ' + data[getRandomInt(data.length)].dateOfCreate.toString().split('T')[0])
+
+    const timer = setTimeout(() => {
+      setMessageDate('')
+    }, 10000)
+  }
+
+  function handleButton() {
+    /**
+     * это костыль для того, чтобы сбрасывать поиск
+     * если вы на первой странице перейдете на вторую
+     * если вы не на первой перейдете на первую
+     */
+    setFilterData([])
+    setId('')
+    setName('')
+    if (nowNumberOfPage === '1') {
+      navigate('/2')
+    } else {
+      navigate('/1')
+    }
+  }
+
+  function handlePressKeyId(e: React.KeyboardEvent) {
+    if (e.code === 'NumpadEnter' || e.code === 'Enter') {    
+      data.map( (obj: IDocumentID) => {
+        if (obj.id === Number(id)) {
+          setFilterData([obj])
+        }
+      })
+    }
+  }
+
+  function handlePressKeyName(e: React.KeyboardEvent) {
+    if (e.code === 'NumpadEnter' || e.code === 'Enter') {    
+      let resultSearch: IDocumentID[] = []
+      data.map( (obj: IDocumentID) => {
+        if (obj.title.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) > -1) {
+          resultSearch.push(obj)
+        }
+      })
+      setFilterData(resultSearch)
+    }
+  }
+
+  useEffect( () => {
+    data.map( (obj: IDocumentID) => {
+      if (obj.id === Number(id)) {
+        setFilterData([obj])
+      }
+    })
+  }, [id])
+
+  useEffect( () => {
+    let resultSearch: IDocumentID[] = []
+    data.map( (obj: IDocumentID) => {
+      if (obj.title.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) > -1) {
+        resultSearch.push(obj)
+      }
+    })
+    setFilterData(resultSearch)
+
+    if (name !== '') {
+      setMessageName(' Найдено: ' + resultSearch.length)
+    }
+
+    const timer = setTimeout(() => {
+      setMessageName('')
+    }, 10000)
+  }, [name])
+
+  useEffect( () => {
+    let resultSearch: IDocumentID[] = []
+    data.map( (obj: IDocumentID) => {
+      if (
+        new Date(obj.dateOfCreate) > startDate
+        &&
+        new Date(obj.dateOfCreate) < endDate
+      ) {
+        console.log(' find: ', obj.dateOfCreate)
+        resultSearch.push(obj)
+      }
+      setFilterData(resultSearch)
+    })
+  }, [startDate, endDate])
+
+  useEffect( () => {
+    console.log(' -> ', type, direction)
+  }, [type, direction])
+
   return (
     <div 
       className='menu'
@@ -31,7 +170,11 @@ function Menu() {
       </p>
       <input 
         className='menu-input menu__id-input'
-        type="text" 
+        type="number"
+        value={id}
+        onChange={handleChangeId}
+        onFocus={handeIdFocus}
+        onKeyPress={ (e: React.KeyboardEvent) => { handlePressKeyId(e)}}
       />
 
       <p
@@ -49,18 +192,22 @@ function Menu() {
       <div
         className='menu__date-inputs'
       >
-        <input 
-          className='menu-input menu__date-input menu__date-input-from'
-          type="text" 
+        <DatePicker 
+          className='menu-input menu__date-input menu__date-input-start'
+          selected={startDate} 
+          onChange={(date:Date) => setStartDate(date)} 
+          onFocus={handeDateFocus}
         />
-        <input 
-          className='menu-input menu__date-input menu__date-input-to'
-          type="text" 
+        <DatePicker 
+          className='menu-input menu__date-input menu__date-input-end'
+          selected={endDate} 
+          onChange={(date:Date) => setEndDate(date)} 
+          onFocus={handeDateFocus}
         />
       </div>
 
       <p
-        className='menu__message menu__name-message'
+        className='menu__message menu__date-message'
       >
         {messageName}
       </p>
@@ -73,7 +220,10 @@ function Menu() {
       </p>
       <input 
         className='menu-input menu__name-input'
-        type="text" 
+        type="text"
+        value={name}
+        onChange={handleChangeName}
+        onKeyPress={ (e: React.KeyboardEvent) => { handlePressKeyName(e)}}
       />
 
       <div
@@ -89,8 +239,13 @@ function Menu() {
         <Select
           isClearable={true}
           className='menu__sort-select menu__sort-options'
-          options={options}
-          defaultValue={options[0]}
+          options={optionsType}
+          defaultValue={optionsType[0]}
+          onChange={ (select) => {
+            if (select !== null) {
+              setType(select)
+            }
+          }}
         />
         <p
           className='menu__title menu__sort-title'
@@ -102,10 +257,22 @@ function Menu() {
         <Select
           isClearable={true}
           className='menu__sort-select menu__sort-direction'
-          options={options}
-          defaultValue={options[0]}
+          options={optionsDirection}
+          defaultValue={optionsDirection[0]}
+          onChange={ (select) => {
+            if (select !== null) {
+              setDirection(select)
+            }
+          }}
         />
       </div>
+
+      <button
+        className='menu__button-restart'
+        onClick={handleButton}
+      >
+        Сбросить поиск
+      </button>
       
     </div>
   )
