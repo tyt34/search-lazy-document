@@ -27,7 +27,11 @@ export function delSymI(text: string) {
  * @param maxAmountButtonsOnPage количество кнопок, которые будут отображаться в приложение
  * @returns 
  */
-export function getButtonsForPagi(nowNumber: number, maxPages: number, maxAmountButtonsOnPage: number) {
+export function getButtonsForPagi(
+  nowNumber: number, 
+  maxPages: number, 
+  maxAmountButtonsOnPage: number
+) {
   const a = nowNumber
   const b = maxPages
   const c = maxAmountButtonsOnPage
