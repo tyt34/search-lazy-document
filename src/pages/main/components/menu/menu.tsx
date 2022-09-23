@@ -125,6 +125,7 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
     data.map( (obj: IDocumentID) => {
       if (obj.id === Number(id)) {
         setFilterData([obj])
+        navigate('/1')
       }
     })
   }, [id])
