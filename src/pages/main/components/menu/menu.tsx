@@ -62,6 +62,7 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
   function handleChangeName(e: React.ChangeEvent<HTMLInputElement>) {
     setName(e.target.value)
     setId('')
+    navigate('/1')
   }
 
   function handeIdFocus() {
