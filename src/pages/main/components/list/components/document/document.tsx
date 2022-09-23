@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import './document.scss'
-import { IDocument, IImgMemory } from '../../../../../../shared/types/main'
+import { IDocumentID, IImgMemory } from '../../../../../../shared/types/main'
 import { getImg } from '../../../../../../shared/api/main'
 
-export interface Props extends IDocument {
+interface Props {
+  data: IDocumentID,
   setMemoryImgLinks: (obj: IImgMemory) => void,
   memoryImgLinks: IImgMemory[]
 }
 
-function Document({text, title, dateOfCreate, setMemoryImgLinks, memoryImgLinks}: Props) {
+function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
+  const { id, title, text, dateOfCreate} = data
   const [open, setOpen] = useState<boolean>(false)
   const [numClickOnDamper, setNumClickOnDamper] = useState<number>(0)
   const [img, setImg] = useState<string>('')
@@ -94,6 +96,11 @@ function Document({text, title, dateOfCreate, setMemoryImgLinks, memoryImgLinks}
           className='document__date'
         >
           Дата создания: {dateOfCreate.toString().split('T')[0]}
+        </p>
+        <p
+          className='document__id'
+        >
+          ID: {id}
         </p>
       </div>
       

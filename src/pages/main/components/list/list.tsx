@@ -17,9 +17,7 @@ function List({showData, setMemoryImgLinks, memoryImgLinks}: Props) {
         showData.map( (obj) => (
           <Document
             key={obj.id}
-            title={obj.title}
-            text={obj.text}
-            dateOfCreate={obj.dateOfCreate}
+            data={obj}
             setMemoryImgLinks={setMemoryImgLinks}
             memoryImgLinks={memoryImgLinks}
           />

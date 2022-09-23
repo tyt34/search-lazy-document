@@ -35,7 +35,7 @@
   flex-direction: column;
   justify-content: space-between;
   margin-top: -5px;
-  height: 155px;
+  height: 180px;
   background-color: beige;
   border-radius: 0 0 5px 5px;
 }
@@ -53,6 +53,10 @@
 }
 
 .document__date {
+  margin-left: 7px;
+}
+
+.document__id {
   margin-left: 7px;
   margin-bottom: 10px;
 }

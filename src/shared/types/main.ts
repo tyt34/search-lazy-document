@@ -32,23 +32,20 @@ export interface IDataFromApi {
   }
 }
 
-export interface IDocument {
+export interface IDocumentID {
   /**
    * В данном приложение это название документа
    */
-  title: string,
-  /**
-   * В данном приложение это ответ на вопрос
-   */
-  text: string,
-  /**
-   * В данном приложение это дата создания документа
-   */
-  dateOfCreate: Date,
-}
-
-export interface IDocumentID extends IDocument {
-  /**
+   title: string,
+   /**
+    * В данном приложение это ответ на вопрос
+    */
+   text: string,
+   /**
+    * В данном приложение это дата создания документа
+    */
+   dateOfCreate: Date,
+   /**
    * id 
    */
   id: number,
