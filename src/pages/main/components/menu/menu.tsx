@@ -57,6 +57,7 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
 
   function handleChangeId(e: React.ChangeEvent<HTMLInputElement>) {
     setId(e.target.value)
+    setName('')
   }
 
   function handleChangeName(e: React.ChangeEvent<HTMLInputElement>) {

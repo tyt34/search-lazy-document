@@ -37,7 +37,7 @@
     <hr>
 </tr>
  
- [Ссылка на готовый проект.](https://tyt34.github.io/search-lazy-document/#/1).
+ [Ссылка на готовый проект.](https://tyt34.github.io/search-lazy-document/#/1)
 
   ## Запуск приложения
   
