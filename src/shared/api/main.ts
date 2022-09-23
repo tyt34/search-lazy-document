@@ -1,8 +1,7 @@
 import { numDocuments } from "../constants/const"
-import { objectFromApi, imgApi } from "../types/main"
+import { IDataFromApi, IImgApi } from "../types/main"
 
-export const getMessages = (): Promise<objectFromApi[]> => {
-  //console.log(' get ')
+export const getMessages = (): Promise<IDataFromApi[]> => {
   return fetch(`https://jservice.io/api/random?count=${numDocuments}`, {
     method: 'GET',
   })
@@ -11,8 +10,7 @@ export const getMessages = (): Promise<objectFromApi[]> => {
   })
 }
 
-export const getImg = (): Promise<imgApi> => {
-  //console.log(' get ')
+export const getImg = (): Promise<IImgApi> => {
   return fetch(`https://yesno.wtf/api`, {
     method: 'GET',
   })

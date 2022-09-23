@@ -1,4 +1,4 @@
-export interface objectFromApi {
+export interface IDataFromApi {
   /**
    * id 
    */
@@ -54,7 +54,7 @@ export interface IDocumentID extends IDocument {
   id: number,
 }
 
-export interface imgApi {
+export interface IImgApi {
   /**
    * В данном апи на картинке будет изображен или ответ да, или нет
    */
@@ -71,7 +71,7 @@ export interface IImgMemory {
   image: string
 }
 
-// string в конце из за дефолтных типов встроенных в react-select
+// string в конце из-за дефолтных типов встроенных в react-select
 export interface ISelectType {
   value: 'no' | 'date' | 'name' | string, 
   label: 'Не сортировать' | 'По дате' | 'По имени' | string

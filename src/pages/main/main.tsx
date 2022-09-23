@@ -7,14 +7,18 @@ import Pagi from './components/pagi/pagi'
 import { 
   numDocuments, 
   heightDoc, 
-  emptyImgMemory, 
-  emptyObject } from "../../shared/constants/const"
+} from "../../shared/constants/const"
 import { getMessages } from '../../shared/api/main'
 import { 
   IDocumentID, 
-  objectFromApi, 
-  IImgMemory 
+  IImgMemory,
 } from '../../shared/types/main'
+import { 
+  delSymI,
+  getNumberStart,
+  getNumberEnd,
+  getMaxPages
+} from '../../shared/utils/main';
 
 function Main() {
   /**
@@ -33,11 +37,16 @@ function Main() {
   /**
    * Все документы полученные и преобразованные с помощью API
    */
-  const [data, setData] = useState<IDocumentID[]>(emptyObject)
+  const [data, setData] = useState<IDocumentID[]>([])
+  /**
+   * Документы полученные и преобразованные с помощью API
+   * используемые для сброса сортировки
+   */
+   const [notSortData, setNotSortData] = useState<IDocumentID[]>([])
   /**
    * Документы, которые отображаются на странице для пользователя
    */
-  const [showData, setShowData] = useState<IDocumentID[]>(emptyObject)
+  const [showData, setShowData] = useState<IDocumentID[]>([])
   /**
    * Массв документов, который формируется за счет фильтрации
    * при использование меню
@@ -51,7 +60,7 @@ function Main() {
    * и снова открыли предыдущий документ
    * Картинка в этом случае будет прежняя
    */
-  const [memoryImgLinks, setMemoryImgLinks] = useState<IImgMemory[]>(emptyImgMemory)
+  const [memoryImgLinks, setMemoryImgLinks] = useState<IImgMemory[]>([])
 
   function saveImg(obj: IImgMemory): void {
     setMemoryImgLinks( (memoryImgLinks) => [...memoryImgLinks, obj])
@@ -60,26 +69,24 @@ function Main() {
   function changeFilterData(objects: IDocumentID[]): void {
     setFilterData(objects)
   }
-  /*
-  function changeShowData(objects: IDocumentID[]): void {
-    setShowData(objects)
+  
+  function changeData(objects: IDocumentID[]): void {
+    setData(objects)
   }
-  */
-  //console.log(' m: ', memoryImgLinks)
-  //console.log(' d: ', showData)
-
+  
   useEffect( () => {
     getMessages()
       .then( (res) => {
         let changedData = res.map( (obj) => {
           return {
             id: obj.id,
-            title: obj.answer,
+            title: delSymI(obj.answer),
             text: obj.question,
             dateOfCreate: obj.airdate
           }
         })
-        setData(changedData)
+        setData([...changedData])
+        setNotSortData([...changedData])
       })
   }, [])
 
@@ -116,22 +123,16 @@ function Main() {
    * при изменение страницы
    */
   useEffect( () => {
-
-    //console.log(' F: ', filterData)
-
     setNumOnPage(Math.floor(height / heightDoc))
-    /*
-    setMaxPages(Math.ceil( numDocuments / (Math.floor(height / 60)) ))
-    */
 
-    const numberFrom = (Number(nowNumberOfPage)-1)*numOnPage
-    const numberTo = (Number(nowNumberOfPage)*numOnPage)
-    //console.log(' текущая страница: ', nowNumberOfPage)
-    //console.log(' на сранице может уместиться: ', numOnPage)
-    //console.log(' всего может быть страниц: ', maxPages)
-
-    //console.log(' первое, с какого элемента нам брать: ', numberFrom)
-    //console.log(' по какой элемент: ', numberTo)
+    const numberStart = getNumberStart(
+      nowNumberOfPage ? nowNumberOfPage : '',
+      numOnPage
+    )
+    const numberEnd = getNumberEnd(
+      nowNumberOfPage ? nowNumberOfPage : '',
+      numOnPage
+    )
 
     let arrForShow
 
@@ -150,28 +151,23 @@ function Main() {
      */
 
     if (filterData.length > 0) {
-      setMaxPages(Math.ceil( filterData.length / (Math.floor(height / 60)) ))
-      if (numberFrom > numDocuments) {
+      setMaxPages(getMaxPages(filterData.length, height, heightDoc))
+      if (numberStart > numDocuments) {
         arrForShow = filterData.slice(numDocuments-numOnPage, numDocuments+1)
       } else {
-        arrForShow = filterData.slice(numberFrom, numberTo)
+        arrForShow = filterData.slice(numberStart, numberEnd)
       }
     } else {
-      setMaxPages(Math.ceil( numDocuments / (Math.floor(height / 60)) ))
-      if (numberFrom > numDocuments) {
+      setMaxPages(getMaxPages(numDocuments, height, heightDoc))
+      if (numberStart > numDocuments) {
         arrForShow = data.slice(numDocuments-numOnPage, numDocuments+1)
       } else {
-        arrForShow = data.slice(numberFrom, numberTo)
+        arrForShow = data.slice(numberStart, numberEnd)
       }
     }
 
-    setShowData(arrForShow)
-
+    setShowData([...arrForShow])
   }, [height, data, filterData, nowNumberOfPage])
-
-  //console.log(' H: ', height)
-  //console.log(' N: ', numOnPage)
-  //console.log(' M: ', maxPages)
 
   return (
     <div
@@ -182,7 +178,10 @@ function Main() {
       >
         <Menu 
           data={data}
+          filterData={filterData}
           setFilterData={changeFilterData}
+          notSortData={notSortData}
+          setData={changeData}
         />
         <Pagi 
           numOnPage={numOnPage}

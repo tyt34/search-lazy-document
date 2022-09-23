@@ -3,10 +3,18 @@ import { useEffect, useState } from "react"
 import Select from 'react-select'
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-import { IDocumentID, ISelectDirection, ISelectType } from '../../../../shared/types/main'
-import { getRandomInt } from '../../../../shared/utils/main'
-import { numDocuments } from '../../../../shared/constants/const'
-import { setEnvironmentData } from 'worker_threads'
+import { 
+  IDocumentID, 
+  ISelectDirection, 
+  ISelectType 
+} from '../../../../shared/types/main'
+import { 
+  getRandomInt,
+  sortNameUp,
+  sortNameDown,
+  sortDateDown,
+  sortDateUp
+ } from '../../../../shared/utils/main'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const defaultSeletType: ISelectType = { value: 'no', label: 'Не сортировать' }
@@ -26,9 +34,12 @@ const optionsDirection = [
 interface Props {
   data: IDocumentID[],
   setFilterData: (objects: IDocumentID[]) => void,
+  notSortData: IDocumentID[],
+  setData: (objects: IDocumentID[]) => void,
+  filterData: IDocumentID[]
 }
 
-function Menu({data, setFilterData}: Props) {
+function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
   const navigate = useNavigate()
   let { nowNumberOfPage } = useParams()
 
@@ -50,6 +61,7 @@ function Menu({data, setFilterData}: Props) {
 
   function handleChangeName(e: React.ChangeEvent<HTMLInputElement>) {
     setName(e.target.value)
+    setId('')
   }
 
   function handeIdFocus() {
@@ -70,14 +82,16 @@ function Menu({data, setFilterData}: Props) {
   }
 
   function handleButton() {
+    setFilterData([])
+    setId('')
+    setName('')
+    setType(defaultSeletType)
+    setData([...notSortData])
     /**
      * это костыль для того, чтобы сбрасывать поиск
      * если вы на первой странице перейдете на вторую
      * если вы не на первой перейдете на первую
      */
-    setFilterData([])
-    setId('')
-    setName('')
     if (nowNumberOfPage === '1') {
       navigate('/2')
     } else {
@@ -141,7 +155,6 @@ function Menu({data, setFilterData}: Props) {
         &&
         new Date(obj.dateOfCreate) < endDate
       ) {
-        console.log(' find: ', obj.dateOfCreate)
         resultSearch.push(obj)
       }
       setFilterData(resultSearch)
@@ -149,7 +162,26 @@ function Menu({data, setFilterData}: Props) {
   }, [startDate, endDate])
 
   useEffect( () => {
-    console.log(' -> ', type, direction)
+    let arrForSort: IDocumentID[] = filterData.length === 0 ? data : filterData
+    let arrResultSort: IDocumentID[] = []
+
+    if (type.value === 'date' && direction.value === 'up') {
+      arrResultSort = arrForSort.sort(sortDateUp)
+    } else if (type.value === 'date' && direction.value === 'down') {
+      arrResultSort = arrForSort.sort(sortDateDown)
+    } else if (type.value === 'name' && direction.value === 'up') {
+      arrResultSort = arrForSort.sort(sortNameUp)
+    } else if (type.value === 'name' && direction.value === 'down') {
+      arrResultSort = arrForSort.sort(sortNameDown)
+    } else if (type.value === 'no') {
+      arrResultSort = notSortData
+    }
+
+    if (filterData.length === 0) {
+      setData([...arrResultSort])
+    } else {
+      setFilterData([...arrResultSort])
+    }
   }, [type, direction])
 
   return (
@@ -237,6 +269,7 @@ function Menu({data, setFilterData}: Props) {
           </b>
         </p>
         <Select
+          value={type}
           isClearable={true}
           className='menu__sort-select menu__sort-options'
           options={optionsType}
@@ -271,7 +304,7 @@ function Menu({data, setFilterData}: Props) {
         className='menu__button-restart'
         onClick={handleButton}
       >
-        Сбросить поиск
+        Сбросить
       </button>
       
     </div>

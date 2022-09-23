@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import './document.scss'
 import { IDocument, IImgMemory } from '../../../../../../shared/types/main'
-import { delSymI } from '../../../../../../shared/utils/main'
 import { getImg } from '../../../../../../shared/api/main'
 
 export interface Props extends IDocument {
@@ -24,7 +23,6 @@ function Document({text, title, dateOfCreate, setMemoryImgLinks, memoryImgLinks}
 
     memoryImgLinks.map( (el) => {
       if (el.title === title) {
-        //console.log(' search img: ', el.image)
         setImg(el.image)
       }
     })
@@ -64,7 +62,7 @@ function Document({text, title, dateOfCreate, setMemoryImgLinks, memoryImgLinks}
         <p
           className='document__title'
         >
-          {delSymI(title)}
+          {title}
         </p>
         <p 
           className='document__forvard-damper'

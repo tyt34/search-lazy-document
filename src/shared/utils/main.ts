@@ -1,3 +1,5 @@
+import { IDocumentID } from "../types/main"
+
 /**
  * Функция для удаления из текста <i> <i/>
  * @param text 
@@ -69,4 +71,106 @@ export function getButtonsForPagi(nowNumber: number, maxPages: number, maxAmount
  */
 export function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
+}
+
+/**
+ * Сортировка по имени и возрастанию
+ * @param a 
+ * @param b 
+ * @returns 
+ */
+export function sortNameUp(a: IDocumentID, b: IDocumentID): number {
+  if (a.title.toLocaleLowerCase() < b.title.toLocaleLowerCase()) {
+    return -1
+  }
+  if (a.title.toLocaleLowerCase() > b.title.toLocaleLowerCase()) {
+    return 1
+  }
+  return 0
+}
+
+/**
+ * Сортировка по имени и убыванию
+ * @param a 
+ * @param b 
+ * @returns 
+ */
+export function sortNameDown(a: IDocumentID, b: IDocumentID): number {
+  if (a.title.toLocaleLowerCase() > b.title.toLocaleLowerCase()) {
+    return -1
+  }
+  if (a.title.toLocaleLowerCase() < b.title.toLocaleLowerCase()) {
+    return 1
+  }
+  return 0
+}
+
+/**
+ * Сортировка по дате и возрастанию
+ * @param a 
+ * @param b 
+ * @returns 
+ */
+export function sortDateUp(a: IDocumentID, b: IDocumentID): number {
+  if (a.dateOfCreate < b.dateOfCreate) {
+    return -1
+  }
+  if (a.dateOfCreate > b.dateOfCreate) {
+    return 1
+  }
+  return 0
+}
+
+/**
+ * Сортировка по дате и убыванию
+ * @param a 
+ * @param b 
+ * @returns 
+ */
+export function sortDateDown(a: IDocumentID, b: IDocumentID): number {
+  if (a.dateOfCreate > b.dateOfCreate) {
+    return -1
+  }
+  if (a.dateOfCreate < b.dateOfCreate) {
+    return 1
+  }
+  return 0
+}
+
+/**
+ * С какого номера отображать документы на странице
+ * @param nowNumberOfPage 
+ * @param numOnPage 
+ * @returns 
+ */
+export function getNumberStart(nowNumberOfPage: string, numOnPage: number): number {
+  return (Number(nowNumberOfPage)-1)*numOnPage
+}
+
+/**
+ * По какой номер отображать данные на странице
+ * @param nowNumberOfPage 
+ * @param numOnPage 
+ * @returns 
+ */
+export function getNumberEnd(nowNumberOfPage: string, numOnPage: number): number {
+  return (Number(nowNumberOfPage)*numOnPage)
+}
+
+/**
+ * Вычисляет максимально возможный номер страницы 
+ * с учетом количества всех документов
+ * высоты экрана
+ * высоты документа
+ * @param numDocuments 
+ * @param height 
+ * @param heightDoc 
+ * @returns 
+ */
+export function getMaxPages(
+  numDocuments: number,
+  height: number,
+  heightDoc: number
+): number {
+  return Math.ceil( numDocuments / (Math.floor(height / heightDoc)) )
 }
