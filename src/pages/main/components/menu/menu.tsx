@@ -1,20 +1,20 @@
+import React, { useEffect, useState } from 'react'
 import './menu.scss'
-import { useEffect, useState } from "react"
 import Select from 'react-select'
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
-import { 
-  IDocumentID, 
-  ISelectDirection, 
-  ISelectType 
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
+import {
+  IDocumentID,
+  ISelectDirection,
+  ISelectType
 } from '../../../../shared/types/main'
-import { 
+import {
   getRandomInt,
   sortNameUp,
   sortNameDown,
   sortDateDown,
   sortDateUp
- } from '../../../../shared/utils/main'
+} from '../../../../shared/utils/main'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const defaultSeletType: ISelectType = { value: 'no', label: 'Не сортировать' }
@@ -23,25 +23,32 @@ const defaultSelectDirection: ISelectDirection = { value: 'up', label: 'По в�
 const optionsType = [
   defaultSeletType,
   { value: 'date', label: 'По дате' },
-  { value: 'name', label: 'По имени' },
+  { value: 'name', label: 'По имени' }
 ]
 
 const optionsDirection = [
   defaultSelectDirection,
-  { value: 'down', label: 'По убыванию' },
+  { value: 'down', label: 'По убыванию' }
 ]
 
 interface Props {
-  data: IDocumentID[],
-  setFilterData: (objects: IDocumentID[]) => void,
-  notSortData: IDocumentID[],
-  setData: (objects: IDocumentID[]) => void,
+  data: IDocumentID[]
+  setFilterData: (objects: IDocumentID[]) => void
+  notSortData: IDocumentID[]
+  setData: (objects: IDocumentID[]) => void
   filterData: IDocumentID[]
 }
 
-function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
+function Menu(
+  {
+    data,
+    setFilterData,
+    notSortData,
+    setData,
+    filterData
+  }: Props): React.ReactElement {
   const navigate = useNavigate()
-  let { nowNumberOfPage } = useParams()
+  const { nowNumberOfPage } = useParams()
 
   const [messageId, setMessageId] = useState<string>('')
   const [messageName, setMessageName] = useState<string>('')
@@ -49,41 +56,40 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
 
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
-  
+
   const [id, setId] = useState<string>('')
   const [name, setName] = useState<string>('')
   const [type, setType] = useState<ISelectType>(defaultSeletType)
   const [direction, setDirection] = useState<ISelectDirection>(defaultSelectDirection)
 
-  function handleChangeId(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChangeId(e: React.ChangeEvent<HTMLInputElement>): void {
     setId(e.target.value)
     setName('')
   }
 
-  function handleChangeName(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChangeName(e: React.ChangeEvent<HTMLInputElement>): void {
     setName(e.target.value)
     setId('')
     navigate('/1')
   }
 
-  function handeIdFocus() {
-    setMessageId(' Пример id: ' + data[getRandomInt(data.length)].id)
+  function handeIdFocus(): void {
+    setMessageId(' Пример id: ' + data[getRandomInt(data.length)].id.toString())
 
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setMessageId('')
     }, 10000)
-    return () => clearTimeout(timer);
   }
 
-  function handeDateFocus() {
+  function handeDateFocus(): void {
     setMessageDate(' Пример даты: ' + data[getRandomInt(data.length)].dateOfCreate.toString().split('T')[0])
 
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setMessageDate('')
     }, 10000)
   }
 
-  function handleButton() {
+  function handleButton(): void {
     setFilterData([])
     setId('')
     setName('')
@@ -101,9 +107,9 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
     }
   }
 
-  function handlePressKeyId(e: React.KeyboardEvent) {
-    if (e.code === 'NumpadEnter' || e.code === 'Enter') {    
-      data.map( (obj: IDocumentID) => {
+  function handlePressKeyId(e: React.KeyboardEvent): void {
+    if (e.code === 'NumpadEnter' || e.code === 'Enter') {
+      data.forEach((obj: IDocumentID) => {
         if (obj.id === Number(id)) {
           setFilterData([obj])
         }
@@ -111,11 +117,11 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
     }
   }
 
-  function handlePressKeyName(e: React.KeyboardEvent) {
-    if (e.code === 'NumpadEnter' || e.code === 'Enter') {    
-      let resultSearch: IDocumentID[] = []
-      data.map( (obj: IDocumentID) => {
-        if (obj.title.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) > -1) {
+  function handlePressKeyName(e: React.KeyboardEvent): void {
+    if (e.code === 'NumpadEnter' || e.code === 'Enter') {
+      const resultSearch: IDocumentID[] = []
+      data.forEach((obj: IDocumentID) => {
+        if (obj.title.toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
           resultSearch.push(obj)
         }
       })
@@ -123,8 +129,8 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
     }
   }
 
-  useEffect( () => {
-    data.map( (obj: IDocumentID) => {
+  useEffect(() => {
+    data.forEach((obj: IDocumentID) => {
       if (obj.id === Number(id)) {
         setFilterData([obj])
         navigate('/1')
@@ -132,30 +138,29 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
     })
   }, [id])
 
-  useEffect( () => {
-    let resultSearch: IDocumentID[] = []
-    data.map( (obj: IDocumentID) => {
-      if (obj.title.toLocaleLowerCase().indexOf(name.toLocaleLowerCase()) > -1) {
+  useEffect(() => {
+    const resultSearch: IDocumentID[] = []
+    data.forEach((obj: IDocumentID) => {
+      if (obj.title.toLocaleLowerCase().includes(name.toLocaleLowerCase())) {
         resultSearch.push(obj)
       }
     })
     setFilterData(resultSearch)
 
     if (name !== '') {
-      setMessageName(' Найдено: ' + resultSearch.length)
+      setMessageName(' Найдено: ' + resultSearch.length.toString())
     }
 
-    const timer = setTimeout(() => {
+    setTimeout(() => {
       setMessageName('')
     }, 10000)
   }, [name])
 
-  useEffect( () => {
-    let resultSearch: IDocumentID[] = []
-    data.map( (obj: IDocumentID) => {
+  useEffect(() => {
+    const resultSearch: IDocumentID[] = []
+    data.forEach((obj: IDocumentID) => {
       if (
-        new Date(obj.dateOfCreate) > startDate
-        &&
+        new Date(obj.dateOfCreate) > startDate &&
         new Date(obj.dateOfCreate) < endDate
       ) {
         resultSearch.push(obj)
@@ -164,8 +169,8 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
     })
   }, [startDate, endDate])
 
-  useEffect( () => {
-    let arrForSort: IDocumentID[] = filterData.length === 0 ? data : filterData
+  useEffect(() => {
+    const arrForSort: IDocumentID[] = filterData.length === 0 ? data : filterData
     let arrResultSort: IDocumentID[] = []
 
     if (type.value === 'date' && direction.value === 'up') {
@@ -188,7 +193,7 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
   }, [type, direction])
 
   return (
-    <div 
+    <div
       className='menu'
     >
       <p
@@ -203,13 +208,13 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
           ID документа
         </b>
       </p>
-      <input 
+      <input
         className='menu-input menu__id-input'
         type="number"
         value={id}
         onChange={handleChangeId}
         onFocus={handeIdFocus}
-        onKeyPress={ (e: React.KeyboardEvent) => { handlePressKeyId(e)}}
+        onKeyPress={ (e: React.KeyboardEvent) => { handlePressKeyId(e) }}
       />
 
       <p
@@ -227,16 +232,16 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
       <div
         className='menu__date-inputs'
       >
-        <DatePicker 
+        <DatePicker
           className='menu-input menu__date-input menu__date-input-start'
-          selected={startDate} 
-          onChange={(date:Date) => setStartDate(date)} 
+          selected={startDate}
+          onChange={(date: Date) => setStartDate(date)}
           onFocus={handeDateFocus}
         />
-        <DatePicker 
+        <DatePicker
           className='menu-input menu__date-input menu__date-input-end'
-          selected={endDate} 
-          onChange={(date:Date) => setEndDate(date)} 
+          selected={endDate}
+          onChange={(date: Date) => setEndDate(date)}
           onFocus={handeDateFocus}
         />
       </div>
@@ -253,12 +258,12 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
           Наименование
         </b>
       </p>
-      <input 
+      <input
         className='menu-input menu__name-input'
         type="text"
         value={name}
         onChange={handleChangeName}
-        onKeyPress={ (e: React.KeyboardEvent) => { handlePressKeyName(e)}}
+        onKeyPress={ (e: React.KeyboardEvent) => { handlePressKeyName(e) }}
       />
 
       <div
@@ -309,7 +314,7 @@ function Menu({data, setFilterData, notSortData, setData, filterData}: Props) {
       >
         Сбросить
       </button>
-      
+
     </div>
   )
 }

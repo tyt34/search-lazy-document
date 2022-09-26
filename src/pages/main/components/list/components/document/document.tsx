@@ -1,37 +1,42 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './document.scss'
 import { IDocumentID, IImgMemory } from '../../../../../../shared/types/main'
 import { getImg } from '../../../../../../shared/api/main'
 
 interface Props {
-  data: IDocumentID,
-  setMemoryImgLinks: (obj: IImgMemory) => void,
+  data: IDocumentID
+  setMemoryImgLinks: (obj: IImgMemory) => void
   memoryImgLinks: IImgMemory[]
 }
 
-function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
-  const { id, title, text, dateOfCreate} = data
+function Document(
+  {
+    data,
+    setMemoryImgLinks,
+    memoryImgLinks
+  }: Props): React.ReactElement {
+  const { id, title, text, dateOfCreate } = data
   const [open, setOpen] = useState<boolean>(false)
   const [numClickOnDamper, setNumClickOnDamper] = useState<number>(0)
   const [img, setImg] = useState<string>('')
   const [statusInMemory, setstatusInMemory] = useState<boolean>(false)
 
-  useEffect( () => {
+  useEffect(() => {
     setstatusInMemory(
-      memoryImgLinks.some( (el: IImgMemory) => {
+      memoryImgLinks.some((el: IImgMemory) => {
         return el.title === title
       })
     )
 
-    memoryImgLinks.map( (el) => {
+    memoryImgLinks.forEach((el) => {
       if (el.title === title) {
         setImg(el.image)
       }
     })
   }, [])
 
-  function openCloseDamper() {
-    setNumClickOnDamper(numClickOnDamper + 1)    
+  function openCloseDamper(): void {
+    setNumClickOnDamper(numClickOnDamper + 1)
     setOpen(!open)
   }
 
@@ -39,10 +44,10 @@ function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
    * отложенная загрузка изображения срабатывающая только при первом открытие спойлера
    * если до этого изображение не сохранялось
    */
-  useEffect( () => {
+  useEffect(() => {
     if (!statusInMemory && numClickOnDamper === 1) {
       getImg()
-        .then( (res) => {
+        .then((res) => {
           setImg(res.image)
 
           setMemoryImgLinks({
@@ -54,7 +59,7 @@ function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
   }, [numClickOnDamper])
 
   return (
-    <div 
+    <div
       className='document'
     >
       <div
@@ -66,7 +71,7 @@ function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
         >
           {title}
         </p>
-        <p 
+        <p
           className='document__forvard-damper'
         >
           {
@@ -74,9 +79,9 @@ function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
           }
         </p>
       </div>
-      
+
       <div
-        className={ 
+        className={
           open ? 'document__info' : 'document__info-close'
         }
       >
@@ -88,10 +93,10 @@ function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
 
         <img
           className='document__img'
-          src={img} 
+          src={img}
           alt=""
         />
-        
+
         <p
           className='document__date'
         >
@@ -103,7 +108,7 @@ function Document({data, setMemoryImgLinks, memoryImgLinks}: Props) {
           ID: {id}
         </p>
       </div>
-      
+
     </div>
   )
 }

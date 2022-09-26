@@ -1,30 +1,30 @@
-import { useState, useEffect } from 'react'
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import './main.scss'
 import Menu from './components/menu/menu'
 import List from './components/list/list'
 import Pagi from './components/pagi/pagi'
-import { 
-  numDocuments, 
-  heightDoc, 
-} from "../../shared/constants/const"
+import {
+  numDocuments,
+  heightDoc
+} from '../../shared/constants/const'
 import { getMessages } from '../../shared/api/main'
-import { 
-  IDocumentID, 
-  IImgMemory,
+import {
+  IDocumentID,
+  IImgMemory
 } from '../../shared/types/main'
-import { 
+import {
   delSymI,
   getNumberStart,
   getNumberEnd,
   getMaxPages
-} from '../../shared/utils/main';
+} from '../../shared/utils/main'
 
-function Main() {
+function Main(): React.ReactElement {
   /**
    * номер текущей страницы
    */
-  let { nowNumberOfPage } = useParams()
+  const { nowNumberOfPage } = useParams()
   /**
    * количество документов, которое может уместиться на странице
    */
@@ -42,7 +42,7 @@ function Main() {
    * Документы полученные и преобразованные с помощью API
    * используемые для сброса сортировки
    */
-   const [notSortData, setNotSortData] = useState<IDocumentID[]>([])
+  const [notSortData, setNotSortData] = useState<IDocumentID[]>([])
   /**
    * Документы, которые отображаются на странице для пользователя
    */
@@ -54,8 +54,8 @@ function Main() {
   const [filterData, setFilterData] = useState<IDocumentID[]>([])
   /**
    * Массив для сохранение ссылок на изображения
-   * Например вы открыли документ, 
-   * затем сменили страницу, 
+   * Например вы открыли документ,
+   * затем сменили страницу,
    * вернулись обратно на прежнюю страницу
    * и снова открыли предыдущий документ
    * Картинка в этом случае будет прежняя
@@ -63,21 +63,21 @@ function Main() {
   const [memoryImgLinks, setMemoryImgLinks] = useState<IImgMemory[]>([])
 
   function saveImg(obj: IImgMemory): void {
-    setMemoryImgLinks( (memoryImgLinks) => [...memoryImgLinks, obj])
+    setMemoryImgLinks((memoryImgLinks) => [...memoryImgLinks, obj])
   }
 
   function changeFilterData(objects: IDocumentID[]): void {
     setFilterData(objects)
   }
-  
+
   function changeData(objects: IDocumentID[]): void {
     setData(objects)
   }
-  
-  useEffect( () => {
+
+  useEffect(() => {
     getMessages()
-      .then( (res) => {
-        let changedData = res.map( (obj) => {
+      .then((res) => {
+        const changedData = res.map((obj) => {
           return {
             id: obj.id,
             title: delSymI(obj.answer),
@@ -92,24 +92,24 @@ function Main() {
 
   const { height } = useWindowDimensions()
 
-  function useWindowDimensions() {
+  function useWindowDimensions(): { height: number } {
     const [windowDimensions, setWindowDimensions] = useState(
       getWindowDimensions()
     )
 
     useEffect(() => {
-      function handleResize() {
+      function handleResize(): void {
         setWindowDimensions(getWindowDimensions())
       }
 
       window.addEventListener('resize', handleResize)
-        return () => window.removeEventListener('resize', handleResize)
-      }, [])
+      return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     return windowDimensions
   }
 
-  function getWindowDimensions() {
+  function getWindowDimensions(): { height: number } {
     const { innerHeight: height } = window
 
     return {
@@ -122,27 +122,27 @@ function Main() {
    * при изменение высоты экрана
    * при изменение страницы
    */
-  useEffect( () => {
+  useEffect(() => {
     setNumOnPage(Math.floor(height / heightDoc))
 
     const numberStart = getNumberStart(
-      nowNumberOfPage ? nowNumberOfPage : '',
+      nowNumberOfPage ?? '1',
       numOnPage
     )
     const numberEnd = getNumberEnd(
-      nowNumberOfPage ? nowNumberOfPage : '',
+      nowNumberOfPage ?? '1',
       numOnPage
     )
 
     let arrForShow
 
     /**
-     * Отображаются, 
-     * Или данные фильтрации, 
+     * Отображаются,
+     * Или данные фильтрации,
      * если она использовалась,
      * и если найдены хоть какие то данные,
      * ИЛИ все данные
-     * 
+     *
      * else это проверка на случай, если перейти на максимальную страницу
      * затем увеличить экран, тогда возникает противоречие
      * например: максимум 10 на экарне, и вы на 10 странице
@@ -153,14 +153,14 @@ function Main() {
     if (filterData.length > 0) {
       setMaxPages(getMaxPages(filterData.length, height, heightDoc))
       if (numberStart > numDocuments) {
-        arrForShow = filterData.slice(numDocuments-numOnPage, numDocuments+1)
+        arrForShow = filterData.slice(numDocuments - numOnPage, numDocuments + 1)
       } else {
         arrForShow = filterData.slice(numberStart, numberEnd)
       }
     } else {
       setMaxPages(getMaxPages(numDocuments, height, heightDoc))
       if (numberStart > numDocuments) {
-        arrForShow = data.slice(numDocuments-numOnPage, numDocuments+1)
+        arrForShow = data.slice(numDocuments - numOnPage, numDocuments + 1)
       } else {
         arrForShow = data.slice(numberStart, numberEnd)
       }
@@ -176,19 +176,19 @@ function Main() {
       <section
         className='main__left'
       >
-        <Menu 
+        <Menu
           data={data}
           filterData={filterData}
           setFilterData={changeFilterData}
           notSortData={notSortData}
           setData={changeData}
         />
-        <Pagi 
+        <Pagi
           numOnPage={numOnPage}
           maxPages={maxPages}
         />
       </section>
-      <List 
+      <List
         showData={showData}
         setMemoryImgLinks={saveImg}
         memoryImgLinks={memoryImgLinks}
@@ -198,4 +198,3 @@ function Main() {
 }
 
 export default Main
-

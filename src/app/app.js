@@ -1,27 +1,27 @@
-import { HashRouter, Routes, Route, Navigate} from 'react-router-dom'
+import React from 'react'
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Main from '../pages/main/main'
 
 function App() {
-
   return (
     <section className="app">
       <HashRouter basename={'/'}>
         <Routes>
-          <Route 
-            path="/" 
+          <Route
+            path="/"
             element={
-              <Navigate 
-                replace to="/1" 
+              <Navigate
+                replace to="/1"
               />
-            } 
+            }
           />
-          <Route 
-            path={"/:nowNumberOfPage"}  
+          <Route
+            path={'/:nowNumberOfPage'}
             element={
               <>
                 <Main />
               </>
-            } 
+            }
           />
         </Routes>
       </HashRouter>
