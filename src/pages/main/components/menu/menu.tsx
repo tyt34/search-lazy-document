@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './menu.scss'
+import { RootState } from '../../../../app/store'
+import { useSelector } from 'react-redux'
 import Select from 'react-select'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -34,7 +36,6 @@ const optionsDirection = [
 interface Props {
   data: IDocumentID[]
   setFilterData: (objects: IDocumentID[]) => void
-  notSortData: IDocumentID[]
   setData: (objects: IDocumentID[]) => void
   filterData: IDocumentID[]
 }
@@ -43,10 +44,11 @@ function Menu(
   {
     data,
     setFilterData,
-    notSortData,
     setData,
     filterData
   }: Props): React.ReactElement {
+  const storeData = useSelector((store: RootState) => store)
+  const originData = useSelector((store: RootState) => store.originData)
   const navigate = useNavigate()
   const { nowNumberOfPage } = useParams()
 
@@ -61,6 +63,8 @@ function Menu(
   const [name, setName] = useState<string>('')
   const [type, setType] = useState<ISelectType>(defaultSeletType)
   const [direction, setDirection] = useState<ISelectDirection>(defaultSelectDirection)
+
+  console.log(' store: ', storeData)
 
   function handleChangeId(e: React.ChangeEvent<HTMLInputElement>): void {
     setId(e.target.value)
@@ -90,11 +94,13 @@ function Menu(
   }
 
   function handleButton(): void {
+    console.log(' click')
     setFilterData([])
     setId('')
     setName('')
     setType(defaultSeletType)
-    setData([...notSortData])
+    // тут должны браться данные для сброса сортировки
+    setData([...originData])
     /**
      * это костыль для того, чтобы сбрасывать поиск
      * если вы на первой странице перейдете на вторую
@@ -182,7 +188,7 @@ function Menu(
     } else if (type.value === 'name' && direction.value === 'down') {
       arrResultSort = arrForSort.sort(sortNameDown)
     } else if (type.value === 'no') {
-      arrResultSort = notSortData
+      arrResultSort = originData
     }
 
     if (filterData.length === 0) {

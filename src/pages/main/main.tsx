@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { RootState } from '../../app/store'
+import { useSelector } from 'react-redux'
 import './main.scss'
 import Menu from './components/menu/menu'
 import List from './components/list/list'
@@ -19,8 +22,11 @@ import {
   getNumberEnd,
   getMaxPages
 } from '../../shared/utils/main'
+import { getDataFromApi } from './main.slice'
 
 function Main(): React.ReactElement {
+  const dispatch = useDispatch()
+  const storeData = useSelector((store: RootState) => store)
   /**
    * номер текущей страницы
    */
@@ -37,34 +43,18 @@ function Main(): React.ReactElement {
   /**
    * Все документы полученные и преобразованные с помощью API
    */
-  const [data, setData] = useState<IDocumentID[]>([])
-  /**
-   * Документы полученные и преобразованные с помощью API
-   * используемые для сброса сортировки
-   */
-  const [notSortData, setNotSortData] = useState<IDocumentID[]>([])
+  const [data, setData] = useState<IDocumentID[]>([])  
   /**
    * Документы, которые отображаются на странице для пользователя
    */
   const [showData, setShowData] = useState<IDocumentID[]>([])
   /**
-   * Массв документов, который формируется за счет фильтрации
+   * Массив документов, которые формируется за счет фильтрации
    * при использование меню
    */
   const [filterData, setFilterData] = useState<IDocumentID[]>([])
-  /**
-   * Массив для сохранение ссылок на изображения
-   * Например вы открыли документ,
-   * затем сменили страницу,
-   * вернулись обратно на прежнюю страницу
-   * и снова открыли предыдущий документ
-   * Картинка в этом случае будет прежняя
-   */
-  const [memoryImgLinks, setMemoryImgLinks] = useState<IImgMemory[]>([])
 
-  function saveImg(obj: IImgMemory): void {
-    setMemoryImgLinks((memoryImgLinks) => [...memoryImgLinks, obj])
-  }
+  console.log(' store: ', storeData)
 
   function changeFilterData(objects: IDocumentID[]): void {
     setFilterData(objects)
@@ -86,7 +76,7 @@ function Main(): React.ReactElement {
           }
         })
         setData([...changedData])
-        setNotSortData([...changedData])
+        dispatch(getDataFromApi(changedData))
       })
   }, [])
 
@@ -167,6 +157,8 @@ function Main(): React.ReactElement {
     }
 
     setShowData([...arrForShow])
+
+    console.log(' change show data')
   }, [height, data, filterData, nowNumberOfPage])
 
   return (
@@ -180,7 +172,6 @@ function Main(): React.ReactElement {
           data={data}
           filterData={filterData}
           setFilterData={changeFilterData}
-          notSortData={notSortData}
           setData={changeData}
         />
         <Pagi
@@ -190,8 +181,6 @@ function Main(): React.ReactElement {
       </section>
       <List
         showData={showData}
-        setMemoryImgLinks={saveImg}
-        memoryImgLinks={memoryImgLinks}
       />
     </div>
   )

@@ -1,20 +1,23 @@
-import React from 'react'
+import React, { memo } from 'react'
 import './list.scss'
 import { IDocumentID, IImgMemory } from '../../../../shared/types/main'
 import Document from './components/document/document'
 
 interface Props {
   showData: IDocumentID[]
-  setMemoryImgLinks: (obj: IImgMemory) => void
-  memoryImgLinks: IImgMemory[]
+  //setMemoryImgLinks: (obj: IImgMemory) => void
+  //memoryImgLinks: IImgMemory[]
 }
 
 function List(
   {
     showData,
-    setMemoryImgLinks,
-    memoryImgLinks
+    //setMemoryImgLinks,
+    //memoryImgLinks
   }: Props): React.ReactElement {
+
+  console.log(' sh: ', showData)
+
   return (
     <div
       className='list'
@@ -24,8 +27,6 @@ function List(
           <Document
             key={obj.id}
             data={obj}
-            setMemoryImgLinks={setMemoryImgLinks}
-            memoryImgLinks={memoryImgLinks}
           />
         ))
       }
@@ -33,4 +34,9 @@ function List(
   )
 }
 
-export default List
+export default memo(List)
+
+//export default List
+
+
+//const ChildMemo = React.memo(Child);

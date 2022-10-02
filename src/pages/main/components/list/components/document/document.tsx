@@ -1,27 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, memo } from 'react'
 import './document.scss'
 import { IDocumentID, IImgMemory } from '../../../../../../shared/types/main'
 import { getImg } from '../../../../../../shared/api/main'
+import { addImgInMemory } from '../../../../main.slice'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../../../../app/store'
 
 interface Props {
   data: IDocumentID
-  setMemoryImgLinks: (obj: IImgMemory) => void
-  memoryImgLinks: IImgMemory[]
+  //setMemoryImgLinks: (obj: IImgMemory) => void
+  //memoryImgLinks: IImgMemory[]
 }
 
 function Document(
   {
     data,
-    setMemoryImgLinks,
-    memoryImgLinks
+    //setMemoryImgLinks,
+    //memoryImgLinks
   }: Props): React.ReactElement {
+  const dispatch = useDispatch()
   const { id, title, text, dateOfCreate } = data
   const [open, setOpen] = useState<boolean>(false)
   const [numClickOnDamper, setNumClickOnDamper] = useState<number>(0)
   const [img, setImg] = useState<string>('')
   const [statusInMemory, setstatusInMemory] = useState<boolean>(false)
+  const memoryImgLinks = useSelector((store: RootState) => store.memoryImgLinks)
+
+  console.log(' d: ', title)
 
   useEffect(() => {
+    
     setstatusInMemory(
       memoryImgLinks.some((el: IImgMemory) => {
         return el.title === title
@@ -33,6 +42,7 @@ function Document(
         setImg(el.image)
       }
     })
+    
   }, [])
 
   function openCloseDamper(): void {
@@ -49,11 +59,14 @@ function Document(
       getImg()
         .then((res) => {
           setImg(res.image)
-
-          setMemoryImgLinks({
-            title,
-            image: res.image
-          })
+          dispatch(
+            addImgInMemory(
+              {
+                title,
+                image: res.image
+              }
+            )
+          )
         })
     }
   }, [numClickOnDamper])
@@ -113,4 +126,5 @@ function Document(
   )
 }
 
-export default Document
+//export default Document
+export default memo(Document)
