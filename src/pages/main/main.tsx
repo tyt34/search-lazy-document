@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { RootState } from '../../app/store'
-import { useSelector } from 'react-redux'
 import './main.scss'
 import Menu from './components/menu/menu'
 import List from './components/list/list'
@@ -13,8 +11,7 @@ import {
 } from '../../shared/constants/const'
 import { getMessages } from '../../shared/api/main'
 import {
-  IDocumentID,
-  IImgMemory
+  IDocumentID
 } from '../../shared/types/main'
 import {
   delSymI,
@@ -26,7 +23,6 @@ import { getDataFromApi } from './main.slice'
 
 function Main(): React.ReactElement {
   const dispatch = useDispatch()
-  const storeData = useSelector((store: RootState) => store)
   /**
    * номер текущей страницы
    */
@@ -43,7 +39,7 @@ function Main(): React.ReactElement {
   /**
    * Все документы полученные и преобразованные с помощью API
    */
-  const [data, setData] = useState<IDocumentID[]>([])  
+  const [data, setData] = useState<IDocumentID[]>([])
   /**
    * Документы, которые отображаются на странице для пользователя
    */
@@ -53,8 +49,6 @@ function Main(): React.ReactElement {
    * при использование меню
    */
   const [filterData, setFilterData] = useState<IDocumentID[]>([])
-
-  console.log(' store: ', storeData)
 
   function changeFilterData(objects: IDocumentID[]): void {
     setFilterData(objects)
@@ -157,8 +151,6 @@ function Main(): React.ReactElement {
     }
 
     setShowData([...arrForShow])
-
-    console.log(' change show data')
   }, [height, data, filterData, nowNumberOfPage])
 
   return (

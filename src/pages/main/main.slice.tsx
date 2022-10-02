@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { IDocumentID, IImgMemory } from "../../shared/types/main"
+import { IDocumentID, IImgMemory } from '../../shared/types/main'
 
 interface Props {
   /**
@@ -41,7 +41,7 @@ export const counterReducer = createSlice({
     },
     createDataForShow: (state, action: PayloadAction<IDocumentID[]>) => {
       state.showData = action.payload
-    },
+    }
   }
 })
 

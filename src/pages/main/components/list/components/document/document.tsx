@@ -1,23 +1,19 @@
 import React, { useEffect, useState, memo } from 'react'
 import './document.scss'
-import { IDocumentID, IImgMemory } from '../../../../../../shared/types/main'
+import { IDocumentID } from '../../../../../../shared/types/main'
 import { getImg } from '../../../../../../shared/api/main'
 import { addImgInMemory } from '../../../../main.slice'
 import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../../../../app/store'
 
 interface Props {
   data: IDocumentID
-  //setMemoryImgLinks: (obj: IImgMemory) => void
-  //memoryImgLinks: IImgMemory[]
+  imgFromMemory: string | undefined
 }
 
 function Document(
   {
     data,
-    //setMemoryImgLinks,
-    //memoryImgLinks
+    imgFromMemory
   }: Props): React.ReactElement {
   const dispatch = useDispatch()
   const { id, title, text, dateOfCreate } = data
@@ -25,24 +21,14 @@ function Document(
   const [numClickOnDamper, setNumClickOnDamper] = useState<number>(0)
   const [img, setImg] = useState<string>('')
   const [statusInMemory, setstatusInMemory] = useState<boolean>(false)
-  const memoryImgLinks = useSelector((store: RootState) => store.memoryImgLinks)
-
-  console.log(' d: ', title)
 
   useEffect(() => {
-    
-    setstatusInMemory(
-      memoryImgLinks.some((el: IImgMemory) => {
-        return el.title === title
-      })
-    )
-
-    memoryImgLinks.forEach((el) => {
-      if (el.title === title) {
-        setImg(el.image)
-      }
-    })
-    
+    if (imgFromMemory !== undefined) {
+      setImg(
+        imgFromMemory
+      )
+      setstatusInMemory(true)
+    }
   }, [])
 
   function openCloseDamper(): void {
@@ -126,5 +112,4 @@ function Document(
   )
 }
 
-//export default Document
 export default memo(Document)

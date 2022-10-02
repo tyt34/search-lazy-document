@@ -47,7 +47,6 @@ function Menu(
     setData,
     filterData
   }: Props): React.ReactElement {
-  const storeData = useSelector((store: RootState) => store)
   const originData = useSelector((store: RootState) => store.originData)
   const navigate = useNavigate()
   const { nowNumberOfPage } = useParams()
@@ -63,8 +62,6 @@ function Menu(
   const [name, setName] = useState<string>('')
   const [type, setType] = useState<ISelectType>(defaultSeletType)
   const [direction, setDirection] = useState<ISelectDirection>(defaultSelectDirection)
-
-  console.log(' store: ', storeData)
 
   function handleChangeId(e: React.ChangeEvent<HTMLInputElement>): void {
     setId(e.target.value)
@@ -94,7 +91,6 @@ function Menu(
   }
 
   function handleButton(): void {
-    console.log(' click')
     setFilterData([])
     setId('')
     setName('')
