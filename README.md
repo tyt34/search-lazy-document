@@ -7,6 +7,8 @@
 ![](https://shields.io/badge/-TypeScript-2D79C7)
 ![](https://shields.io/badge/-JSDoc-006FBB)
 ![](https://shields.io/badge/-Jest-99425B)
+![](https://shields.io/badge/-Redux-764ABC)
+![](https://shields.io/badge/-Redux_Tollkit-764ABC)
 
 ## Описание
 - В данном приложение реализован просмотр списка документов, с возможностью поиска, фильтрации и сортировки.
